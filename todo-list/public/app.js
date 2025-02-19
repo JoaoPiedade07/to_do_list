@@ -106,8 +106,6 @@ function addTask() {
       });
   }
   
-  
-
   function deleteTask(id) {
     fetch(`/delete-task/${id}`, {
       method: 'DELETE'
@@ -132,7 +130,6 @@ function addTask() {
       });
     }
   } 
-  
   // Carregar tarefas ao inicializar a página
   loadTasks();
   
