@@ -10,8 +10,10 @@ document.addEventListener("DOMContentLoaded", loadTasks);
             
             li.innerHTML = `
                 <span onclick="toggleTask(this)">${taskText}</span>
-                <button onclick="editTask(this)">✏️</button>
-                <button onclick="removeTask(this)">❌</button>
+                <div class="buttons">
+                    <button onclick="editTask(this)">✏️</button>
+                    <button onclick="removeTask(this)">❌</button>
+                </div>
             `;
             
             taskList.appendChild(li);
@@ -25,16 +27,36 @@ document.addEventListener("DOMContentLoaded", loadTasks);
         }
         
         function editTask(button) {
-            let taskSpan = button.parentElement.querySelector("span");
-            let newText = prompt("Edite sua tarefa:", taskSpan.innerText);
-            if (newText !== null && newText.trim() !== "") {
+            let taskSpan = button.parentElement.parentElement.querySelector("span");
+            let oldText = taskSpan.innerText;
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = oldText;
+            input.className = "edit-input";
+            input.onblur = function() {
+                saveEdit(this, taskSpan);
+            };
+            input.onkeypress = function(event) {
+                if (event.key === "Enter") {
+                    saveEdit(this, taskSpan);
+                }
+            };
+            
+            taskSpan.parentElement.replaceChild(input, taskSpan);
+            input.focus();
+        }
+        
+        function saveEdit(input, taskSpan) {
+            let newText = input.value.trim();
+            if (newText !== "") {
                 taskSpan.textContent = newText;
-                saveTasks();
             }
+            input.parentElement.replaceChild(taskSpan, input);
+            saveTasks();
         }
         
         function removeTask(button) {
-            button.parentElement.remove();
+            button.parentElement.parentElement.remove();
             saveTasks();
         }
         
@@ -56,10 +78,11 @@ document.addEventListener("DOMContentLoaded", loadTasks);
                 let li = document.createElement("li");
                 li.innerHTML = `
                     <span onclick="toggleTask(this)" class="${task.done ? 'done' : ''}">${task.text}</span>
-                    <button onclick="editTask(this)">✏️</button>
-                    <button onclick="removeTask(this)">❌</button>
+                    <div class="buttons">
+                        <button onclick="editTask(this)">✏️</button>
+                        <button onclick="removeTask(this)">❌</button>
+                    </div>
                 `;
                 taskList.appendChild(li);
             });
         }
-        

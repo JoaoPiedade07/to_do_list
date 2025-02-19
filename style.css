@@ -19,3 +19,12 @@ li {
     text-decoration: line-through;
     color: gray;
 }
+.edit-input {
+    width: 70%;
+    padding: 5px;
+}
+.button {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
