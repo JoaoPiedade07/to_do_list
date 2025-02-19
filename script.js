@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", loadTasks);
             
             li.innerHTML = `
                 <span onclick="toggleTask(this)">${taskText}</span>
+                <button onclick="editTask(this)">✏️</button>
                 <button onclick="removeTask(this)">❌</button>
             `;
             
@@ -23,6 +24,15 @@ document.addEventListener("DOMContentLoaded", loadTasks);
             saveTasks();
         }
         
+        function editTask(button) {
+            let taskSpan = button.parentElement.querySelector("span");
+            let newText = prompt("Edite sua tarefa:", taskSpan.innerText);
+            if (newText !== null && newText.trim() !== "") {
+                taskSpan.textContent = newText;
+                saveTasks();
+            }
+        }
+        
         function removeTask(button) {
             button.parentElement.remove();
             saveTasks();
@@ -31,7 +41,9 @@ document.addEventListener("DOMContentLoaded", loadTasks);
         function saveTasks() {
             let tasks = [];
             document.querySelectorAll("#taskList li").forEach(li => {
-                tasks.push({ text: li.innerText.replace("❌", ""), done: li.firstChild.classList.contains("done") });
+                let taskText = li.querySelector("span").textContent;
+                let isDone = li.querySelector("span").classList.contains("done");
+                tasks.push({ text: taskText, done: isDone });
             });
             localStorage.setItem("tasks", JSON.stringify(tasks));
         }
@@ -39,12 +51,15 @@ document.addEventListener("DOMContentLoaded", loadTasks);
         function loadTasks() {
             let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
             let taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
             tasks.forEach(task => {
                 let li = document.createElement("li");
                 li.innerHTML = `
                     <span onclick="toggleTask(this)" class="${task.done ? 'done' : ''}">${task.text}</span>
+                    <button onclick="editTask(this)">✏️</button>
                     <button onclick="removeTask(this)">❌</button>
                 `;
                 taskList.appendChild(li);
             });
         }
+        
