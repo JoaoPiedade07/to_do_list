@@ -24,8 +24,23 @@ body {
   }
   
   button {
-    margin-top: 10px;
-    padding: 10px;
+    margin-left: 10px;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  button:nth-child(2) { /* Botão de Editar */
+    background-color: #ffc107;
+  }
+  
+  button:nth-child(3) { /* Botão de Excluir */
+    background-color: #dc3545;
+    color: white;
   }
   
   ul {

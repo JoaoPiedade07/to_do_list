@@ -1,9 +1,11 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path'); // Para resolver caminhos de arquivos corretamente
 const app = express();
 const port = 3000;
 
-app.use(express.static('public'));  // Serve arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));  // Serve arquivos estáticos
+
 app.use(express.json());
 
 // Inicializar o banco de dados SQLite
@@ -36,6 +38,36 @@ app.post('/add-task', (req, res) => {
       res.status(200).json({ id: this.lastID, task });
     }
   });
+});
+
+// Rota para deletar uma tarefa
+app.delete('/delete-task/:id', (req, res) => {
+    const { id } = req.params;
+    db.run("DELETE FROM tasks WHERE id = ?", id, function(err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json({ message: "Tarefa deletada com sucesso!" });
+      }
+    });
+  });
+
+  // Rota para editar uma tarefa
+  app.put('/edit-task/:id', (req, res) => {
+    const { id } = req.params;
+    const { task } = req.body;
+    db.run("UPDATE tasks SET task = ? WHERE id = ?", [task, id], function(err) {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json({ message: "Tarefa atualizada com sucesso!" });
+      }
+    });
+  });
+  
+// Rota para servir o arquivo index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Iniciar o servidor
